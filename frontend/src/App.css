@@ -1,0 +1,52 @@
+/* Root container layout */
+#root {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 2rem;
+  text-align: left;
+}
+
+/* Logo styles */
+.logo {
+  height: 6rem;
+  padding: 1.5rem;
+  transition: filter 0.3s ease;
+  will-change: filter;
+}
+
+.logo:hover {
+  filter: drop-shadow(0 0 2rem rgba(100, 108, 255, 0.6));
+}
+
+.logo.react:hover {
+  filter: drop-shadow(0 0 2rem rgba(97, 218, 251, 0.6));
+}
+
+/* Spin animation – keep this only if needed */
+@keyframes logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Only apply animation when allowed */
+@media (prefers-reduced-motion: no-preference) {
+  .logo.spin {
+    animation: logo-spin infinite 20s linear;
+  }
+}
+
+/* Card styling */
+.card {
+  padding: 2rem;
+  border-radius: 0.6rem;
+  background-color: #ffffff;
+}
+
+/* Docs hint text */
+.read-the-docs {
+  color: #888;
+}
