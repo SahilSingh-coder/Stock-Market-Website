@@ -1,36 +1,35 @@
-console.log("🔥 THIS FILE IS ACTUALLY RUNNING 🔥");
+console.log("🔥 BACKEND ENTRY FILE RUNNING 🔥");
 
 require("dotenv").config();
 
 const express = require("express");
 const mongoose = require("mongoose");
-const bodyParser = require("body-parser");
 const cors = require("cors");
 const bcrypt = require("bcrypt");
 
-// Models
-const { HoldingsModel } = require("./model/HoldingsModel");
-const { PositionsModel } = require("./model/PositionsModel");
-const { OrdersModel } = require("./model/OrdersModel");
+// Models (⚠️ paths MUST match folder names exactly)
+const HoldingsModel = require("./model/HoldingsModel");
+const PositionsModel = require("./model/PositionsModel");
+const OrdersModel = require("./model/OrdersModel");
 const User = require("./model/UserModel");
 
 const app = express();
-const PORT = process.env.PORT || 3002;
+
+// ✅ Render provides PORT automatically
+const PORT = process.env.PORT || 10000;
 
 // ---------------- MIDDLEWARE ----------------
-
 app.use(cors());
-app.use(bodyParser.json());
+app.use(express.json()); // body-parser NOT needed anymore
 
 // ---------------- ROUTES ----------------
 
-// Root
+// Health check
 app.get("/", (req, res) => {
   res.send("Backend is running 🚀");
 });
 
 // ---------------- SIGNUP ----------------
-
 app.post("/signup", async (req, res) => {
   try {
     const { name, email, password } = req.body;
@@ -63,16 +62,15 @@ app.post("/signup", async (req, res) => {
       },
     });
   } catch (error) {
-    console.error(error);
+    console.error("Signup error:", error);
     res.status(500).json({ message: "Server error" });
   }
 });
 
 // ---------------- HOLDINGS ----------------
-
 app.get("/allHoldings", async (req, res) => {
   try {
-    const allHoldings = await HoldingsModel.find({});
+    const allHoldings = await HoldingsModel.find();
     res.json(allHoldings);
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -80,10 +78,9 @@ app.get("/allHoldings", async (req, res) => {
 });
 
 // ---------------- POSITIONS ----------------
-
 app.get("/allPositions", async (req, res) => {
   try {
-    const allPositions = await PositionsModel.find({});
+    const allPositions = await PositionsModel.find();
     res.json(allPositions);
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -91,33 +88,26 @@ app.get("/allPositions", async (req, res) => {
 });
 
 // ---------------- ORDERS ----------------
-
 app.post("/newOrder", async (req, res) => {
   try {
-    const newOrder = new OrdersModel({
-      name: req.body.name,
-      qty: req.body.qty,
-      price: req.body.price,
-      mode: req.body.mode,
-    });
-
+    const newOrder = new OrdersModel(req.body);
     await newOrder.save();
+
     res.status(201).json({ message: "Order saved successfully!" });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 });
 
-// ---------------- DB CONNECT + SERVER ----------------
-
+// ---------------- DB + SERVER ----------------
 mongoose
   .connect(process.env.MONGO_URI)
   .then(() => {
-    console.log("DB connected successfully!");
+    console.log("✅ MongoDB connected");
     app.listen(PORT, () => {
-      console.log(`Server running on port ${PORT}`);
+      console.log(`🚀 Server running on port ${PORT}`);
     });
   })
   .catch((err) => {
-    console.error("DB connection error:", err);
+    console.error("❌ MongoDB connection error:", err);
   });
