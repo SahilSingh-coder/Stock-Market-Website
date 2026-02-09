@@ -11,7 +11,7 @@ const bcrypt = require("bcrypt");
 const HoldingsModel = require("./model/HoldingsModel");
 const PositionsModel = require("./model/PositionsModel");
 const OrdersModel = require("./model/OrdersModel");
-const User = require("./model/UserModel");
+const User = require("./model/userModel");
 
 const app = express();
 
